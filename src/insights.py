@@ -1,3 +1,6 @@
+import csv
+
+
 def get_unique_job_types(path):
     """Checks all different job types and returns a list of them
 
@@ -13,7 +16,17 @@ def get_unique_job_types(path):
     list
         List of unique job types
     """
-    return []
+    with open(path) as jobs:
+        types_jobs = []
+        jobs_list = csv.DictReader(jobs)
+        for job in jobs_list:
+            if not job["type"] in types_jobs:
+                types_jobs.append(job["type"])
+
+    return types_jobs
+
+
+# print(get_unique_job_types("tests/mocks/jobs.csv"))
 
 
 def filter_by_job_type(jobs, job_type):
@@ -31,7 +44,7 @@ def filter_by_job_type(jobs, job_type):
     list
         List of jobs with provided job_type
     """
-    return []
+    return [job for job in jobs if job["job_type"] == job_type]
 
 
 def get_unique_industries(path):
@@ -49,7 +62,16 @@ def get_unique_industries(path):
     list
         List of unique industries
     """
-    return []
+    with open(path) as jobs:
+        industries = []
+        jobs_list = csv.DictReader(jobs)
+        for job in jobs_list:
+            if not job["industry"] in industries and job["industry"] != "":
+                industries.append(job["industry"])
+    return industries
+
+
+# print(get_unique_industries("src/jobs.csv"))
 
 
 def filter_by_industry(jobs, industry):
@@ -67,7 +89,10 @@ def filter_by_industry(jobs, industry):
     list
         List of jobs with provided industry
     """
-    return []
+    return [job for job in jobs if job["industry"] == industry]
+
+
+# print(filter_by_industry("src/jobs.csv"))
 
 
 def get_max_salary(path):
@@ -85,7 +110,18 @@ def get_max_salary(path):
     int
         The maximum salary paid out of all job opportunities
     """
-    pass
+    with open(path) as jobs:
+        max_salary = 0
+        jobs_list = csv.DictReader(jobs)
+        for job in jobs_list:
+            if job["max_salary"].isdigit():
+                if int(job["max_salary"]) > max_salary:
+                    max_salary = int(job["max_salary"])
+    return max_salary
+#  print(get_max_salary("src/jobs.csv"))  # 383416
+
+
+#  print(get_max_salary("tests/mocks/jobs_with_salaries.csv"))
 
 
 def get_min_salary(path):
@@ -103,7 +139,18 @@ def get_min_salary(path):
     int
         The minimum salary paid out of all job opportunities
     """
-    pass
+    with open(path) as jobs:
+        jobs_list = csv.DictReader(jobs)
+        min_salary = get_max_salary(path)
+        for job in jobs_list:
+            if job["min_salary"].isdigit():
+                if int(job["min_salary"]) < min_salary:
+                    min_salary = int(job["min_salary"])
+    return min_salary
+
+
+print(get_min_salary("src/jobs.csv"))
+#  print(get_min_salary("tests/mocks/jobs_with_salaries.csv"))
 
 
 def matches_salary_range(job, salary):
@@ -129,7 +176,20 @@ def matches_salary_range(job, salary):
         If `job["min_salary"]` is greather than `job["max_salary"]`
         If `salary` isn't a valid integer
     """
-    pass
+    if (
+        "max_salary" not in job or
+        "min_salary" not in job or
+        type(job["max_salary"]) != int or
+        type(job["min_salary"]) != int or
+        type(salary) != int or
+        job["max_salary"] < job["min_salary"]
+    ):
+        raise ValueError
+
+    if job["min_salary"] <= salary <= job["max_salary"]:
+        return True
+    else:
+        return False
 
 
 def filter_by_salary_range(jobs, salary):
