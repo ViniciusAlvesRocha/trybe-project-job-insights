@@ -19,6 +19,4 @@ def read(path):
     """
     with open(path) as jobs:
         jobs_list = csv.DictReader(jobs)
-        print(jobs_list)
         return [job for job in jobs_list]
-

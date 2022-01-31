@@ -1,4 +1,5 @@
 import csv
+from src.jobs import read
 
 
 def get_unique_job_types(path):
@@ -16,17 +17,16 @@ def get_unique_job_types(path):
     list
         List of unique job types
     """
-    with open(path) as jobs:
-        types_jobs = []
-        jobs_list = csv.DictReader(jobs)
-        for job in jobs_list:
-            if not job["type"] in types_jobs:
-                types_jobs.append(job["type"])
+    types_jobs = []
+    jobs = read(path)
+    for job in jobs:
+        if not job["job_type"] in types_jobs:
+            types_jobs.append(job["job_type"])
 
     return types_jobs
 
 
-# print(get_unique_job_types("tests/mocks/jobs.csv"))
+print(get_unique_job_types("src/jobs.csv"))
 
 
 def filter_by_job_type(jobs, job_type):
@@ -149,7 +149,7 @@ def get_min_salary(path):
     return min_salary
 
 
-print(get_min_salary("src/jobs.csv"))
+#  print(get_min_salary("src/jobs.csv"))
 #  print(get_min_salary("tests/mocks/jobs_with_salaries.csv"))
 
 
